@@ -10,7 +10,7 @@
   "permissions": ["storage", "scripting", "activeTab"],
   "host_permissions": ["<all_urls>"],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.ts"
   },
   "optional_permissions": ["downloads", "nativeMessaging"],
   "browser_specific_settings": {
