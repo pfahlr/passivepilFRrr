@@ -7,12 +7,12 @@
     "default_title": "Selector Logger",
     "default_popup": "popup.html"
   },
-  "permissions": ["storage", "scripting", "activeTab"],
+  "permissions": ["storage", "scripting", "activeTab", "nativeMessaging"],
   "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "background.ts"
   },
-  "optional_permissions": ["downloads", "nativeMessaging"],
+  "optional_permissions": ["downloads"],
   "browser_specific_settings": {
   "gecko": { "id": "selectorlogger@pfahlr" }
    }
