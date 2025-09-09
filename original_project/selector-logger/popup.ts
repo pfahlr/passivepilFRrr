@@ -1,22 +1,24 @@
-// popup.js
+// popup.ts
+
+import { messaging } from '~/messaging';
 
 /**
  * Global Variables
  */
 
-const rowsEl = document.getElementById('rows');
-const addRowBtn = document.getElementById('addRow');
-const runBtn = document.getElementById('run');
-const clearBtn = document.getElementById('clearLog');
-const logEl = document.getElementById('log');
+const rowsEl = document.getElementById('rows') as HTMLElement;
+const addRowBtn = document.getElementById('addRow') as HTMLButtonElement;
+const runBtn = document.getElementById('run') as HTMLButtonElement;
+const clearBtn = document.getElementById('clearLog') as HTMLButtonElement;
+const logEl = document.getElementById('log') as HTMLTextAreaElement;
 
-const skipVisitedEl = document.getElementById('skipVisited');
-const resetSessionBtn = document.getElementById('resetSession');
+const skipVisitedEl = document.getElementById('skipVisited') as HTMLInputElement;
+const resetSessionBtn = document.getElementById('resetSession') as HTMLButtonElement;
 
-const enableNativeEl = document.getElementById('enableNative');
-const filePathEl = document.getElementById('filePath');
-const testNativeBtn = document.getElementById('testNative');
-const nativeStatusEl = document.getElementById('nativeStatus');
+const enableNativeEl = document.getElementById('enableNative') as HTMLInputElement;
+const filePathEl = document.getElementById('filePath') as HTMLInputElement;
+const testNativeBtn = document.getElementById('testNative') as HTMLButtonElement;
+const nativeStatusEl = document.getElementById('nativeStatus') as HTMLElement;
 
 // Prefer session storage; fallback to local if unavailable
 const ses = chrome.storage.session || null;
@@ -28,25 +30,7 @@ const VISITED_KEY = 'selectorLoggerVisited'; // { urls: string[] }
 const LOG_KEY     = 'selectorLoggerLog';     // { lines: string[] }
 const MAX_LOG_LINES = 5000;                  // keep things bounded
 
-// in top-level bindings:
-const autoRunEl = document.getElementById('autoRun');
-
-// in persist():
-const state = {
-    rows,
-    enableNative: enableNativeEl.checked,
-    filePath: filePathEl.value.trim(),
-    skipVisited: skipVisitedEl.checked,
-    autoRun: !!autoRunEl.checked,
-};
-
-chrome.storage.local.set({ [STATE_KEY]: state });
-
-// in restore():
-autoRunEl.checked = !!state.autoRun;
-
-// listeners:
-autoRunEl.addEventListener('change', persist);
+const autoRunEl = document.getElementById('autoRun') as HTMLInputElement;
 
 
 /**
@@ -54,7 +38,7 @@ autoRunEl.addEventListener('change', persist);
  */
 
 /** Normalize: origin + path (+ query), drop hash, trim trailing slash (except root) */
-function normalizeUrl(raw) {
+function normalizeUrl(raw: string): string {
     try {
         const u = new URL(raw);
         let path = u.pathname || '/';
@@ -73,8 +57,8 @@ function normalizeUrl(raw) {
 function persist() {
     const rows = Array.from(rowsEl.querySelectorAll('.row'))
     .map(r => ({
-        enabled: r.querySelector('input[type="checkbox"]').checked,
-               value: r.querySelector('input[type="text"]').value.trim()
+        enabled: (r.querySelector('input[type="checkbox"]') as HTMLInputElement).checked,
+               value: (r.querySelector('input[type="text"]') as HTMLInputElement).value.trim()
     }));
     const state = {
         rows,
@@ -95,8 +79,8 @@ function appendLog(line) {
 }
 
 async function persistLogAppend(newLines) {
-    const bag = await sessGet(LOG_KEY);
-    const lines = bag?.[LOG_KEY]?.lines ? bag[LOG_KEY].lines.slice() : [];
+    const bag = await sessGet(LOG_KEY) as any;
+    const lines = bag?.[LOG_KEY]?.lines ? (bag[LOG_KEY].lines as string[]).slice() : [];
     for (const l of newLines) {
         lines.push(l);
     }
@@ -113,7 +97,7 @@ async function markVisited(url) {
     const visited = new Set(bag?.[VISITED_KEY]?.urls || []);
     visited.add(url);
     await sessSet({ [VISITED_KEY]: { urls: Array.from(visited) } });
-    chrome.runtime.sendMessage({ type: 'updateBadge' });
+    messaging.sendMessage('updateBadge');
 }
 
 
@@ -129,7 +113,7 @@ async function restore() {
         (state.rows || ['']).forEach(item => {
             const row = makeRow(typeof item === 'string' ? item : item.value);
             if (typeof item === 'object') {
-                row.querySelector('input[type="checkbox"]').checked = !!item.enabled;
+                (row.querySelector('input[type="checkbox"]') as HTMLInputElement).checked = !!item.enabled;
             }
             rowsEl.appendChild(row);
         });
@@ -272,7 +256,7 @@ function runCollectors(rows) {
     }
 
     function globToRegex(glob) {
-        const esc = s => s.replace(/[-\/\\^$+?.()|[\]{}]/g, '\\$&');
+        const esc = (s: string) => s.replace(/[-/\\^$+?.()|[\]{}]/g, '\\$&');
         let rx = '';
         for (const ch of glob) rx += (ch === '*') ? '.*' : esc(ch);
         return new RegExp('^' + rx + '$');
@@ -292,8 +276,8 @@ addRowBtn.addEventListener('click', () => {
 
 runBtn.addEventListener('click', async () => {
     const rows = Array.from(rowsEl.querySelectorAll('.row')).map(r => ({
-        enabled: r.querySelector('input[type="checkbox"]').checked,
-                                                                       value: r.querySelector('input[type="text"]').value.trim()
+        enabled: (r.querySelector('input[type="checkbox"]') as HTMLInputElement).checked,
+               value: (r.querySelector('input[type="text"]') as HTMLInputElement).value.trim()
     })).filter(r => r.enabled && r.value.length);
 
     if (!rows.length) return;
@@ -327,7 +311,7 @@ runBtn.addEventListener('click', async () => {
         const inj = await chrome.scripting.executeScript({
             target: { tabId: tab.id },
             func: runCollectors,
-            args: [rows, state]
+            args: [rows, state] as any
         });
 
         // unwrap
@@ -346,18 +330,16 @@ runBtn.addEventListener('click', async () => {
         }
 
         if (state.enableNative && state.filePath) {
-            chrome.runtime.sendMessage({
-                type: 'nativeAppend',
-                path: state.filePath,
-                lines
-            }, resp => {
-                if (chrome.runtime.lastError) {
-                    nativeStatusEl.textContent = `Native error: ${chrome.runtime.lastError.message}`;
-                } else if (resp?.ok) {
+            messaging.sendMessage('nativeAppend', { path: state.filePath, lines })
+            .then(resp => {
+                if (resp.ok) {
                     nativeStatusEl.textContent = `Appended ${lines.length} line(s)`;
                 } else {
-                    nativeStatusEl.textContent = resp?.error || 'Native append failed';
+                    nativeStatusEl.textContent = resp.error || 'Native append failed';
                 }
+            })
+            .catch(err => {
+                nativeStatusEl.textContent = `Native error: ${err.message}`;
             });
         }
 
@@ -387,7 +369,7 @@ clearBtn.addEventListener('click', async () => {
 resetSessionBtn.addEventListener('click', async () => {
     await sessSet({ [VISITED_KEY]: { urls: [] } });
     appendLog('[INFO] Session visited-URL list cleared.');
-    chrome.runtime.sendMessage({ type: 'updateBadge' });
+    messaging.sendMessage('updateBadge');
 });
 
 /*
@@ -400,8 +382,8 @@ filePathEl.addEventListener('input', persist);
 skipVisitedEl.addEventListener('change', persist);
 
 testNativeBtn.addEventListener('click', () => {
-    chrome.runtime.sendMessage({ type: 'nativePing' }, resp => {
-        nativeStatusEl.textContent = resp?.ok ? 'Native OK' : (resp?.error || 'No native host');
+    messaging.sendMessage('nativePing').then(resp => {
+        nativeStatusEl.textContent = resp.ok ? 'Native OK' : (resp.error || 'No native host');
     });
 });
 

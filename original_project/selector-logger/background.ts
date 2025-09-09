@@ -1,17 +1,20 @@
-// background.js
+// background.ts
+
+import type { Runtime } from 'webextension-polyfill';
+import { messaging } from '~/messaging';
 
 const HOST_NAME   = "com.pfahlr.selectorlogger";
 const VISITED_KEY = "selectorLoggerVisited"; // { urls: string[] }
 const STATE_KEY   = "selectorLoggerState";
 
 // ---- Native messaging ----
-let nativePort = null;
+let nativePort: Runtime.Port | null = null;
 
 /**
  *  Utility Functions
- */.
+ */
 
-function normalizeUrl(raw) {
+function normalizeUrl(raw: string): string {
     try {
         const u = new URL(raw);
         let path = u.pathname || "/";
@@ -27,11 +30,11 @@ function normalizeUrl(raw) {
  *  Asynchronous Functions
  */
 
-async function getSessionStore() {
+async function getSessionStore(): Promise<chrome.storage.StorageArea> {
     return chrome.storage.session || chrome.storage.local;
 }
 
-async function updateBadge() {
+async function updateBadge(): Promise<void> {
     try {
         const ses = chrome.storage.session || chrome.storage.local;
         const bag = await ses.get(VISITED_KEY);
@@ -44,7 +47,7 @@ async function updateBadge() {
 }
 
 // Connect (or reuse) native host
-function tryConnectNative() {
+function tryConnectNative(): Promise<void> {
     return new Promise((resolve, reject) => {
         if (nativePort) return resolve();
 
@@ -73,7 +76,7 @@ function tryConnectNative() {
 }
 
 // Send a JSON message to native host and await a JSON response (optional)
-function nativeSend(obj) {
+function nativeSend(obj: unknown): Promise<unknown> {
     return new Promise((resolve, reject) => {
         if (!nativePort) return reject(new Error("No native port"));
         let responded = false;
@@ -228,35 +231,30 @@ chrome.storage.onChanged.addListener((changes, area) => {
     if (changes[VISITED_KEY]) updateBadge();
 });
 
-chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
-    // Badge refresh request from popup
-    if (msg?.type === "updateBadge") {
-        updateBadge().then(() => sendResponse({ ok: true }));
-        return true; // async
-    }
+messaging.onMessage('updateBadge', async () => {
+    await updateBadge();
+});
 
-    // Ping native helper
-    if (msg?.type === "nativePing") {
-        tryConnectNative()
-        .then(() => sendResponse({ ok: true }))
-        .catch(err => sendResponse({ ok: false, error: err.message }));
-        return true; // async
+messaging.onMessage('nativePing', async () => {
+    try {
+        await tryConnectNative();
+        return { ok: true };
+    } catch (err: any) {
+        return { ok: false, error: err.message };
     }
+});
 
-    // Append lines to file through native helper
-    if (msg?.type === "nativeAppend") {
-        console.log('background.js::nativeAppend()');
-        console.log(msg);
-        const { path, lines } = msg;
-        if (!path || !Array.isArray(lines)) {
-            sendResponse({ ok: false, error: "Invalid payload (path/lines)" });
-            return;
-        }
-        tryConnectNative()
-        .then(() => nativeSend({ op: "append", path, lines }))
-        .then(() => sendResponse({ ok: true }))
-        .catch(err => sendResponse({ ok: false, error: err.message }));
-        return true; // async
+messaging.onMessage('nativeAppend', async (message) => {
+    const { path, lines } = message.data;
+    if (!path || !Array.isArray(lines)) {
+        return { ok: false, error: "Invalid payload (path/lines)" };
+    }
+    try {
+        await tryConnectNative();
+        await nativeSend({ op: "append", path, lines });
+        return { ok: true };
+    } catch (err: any) {
+        return { ok: false, error: err.message };
     }
 });
 
