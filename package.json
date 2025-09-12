@@ -9,15 +9,17 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "format": "eslint . --fix",
-    "test": "pnpm lint && pnpm typecheck"
+    "test": "pnpm lint && pnpm typecheck && node --experimental-strip-types --test"
   },
   "devDependencies": {
 
     "@tsconfig/svelte": "^5.0.5",
     "@types/chrome": "^0.0.246",
+    "@types/node": "^22.5.4",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "@webext-core/messaging": "^2.3.0",
+    "jsdom": "^24.0.0",
     "eslint": "^8.57.0",
     "svelte": "^5.38.10",
     "@wxt-dev/module-svelte": "^2.0.4",
