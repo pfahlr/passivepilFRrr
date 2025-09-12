@@ -1,0 +1,6 @@
+{
+  "name": "com.pfahlr.selectorlogger",
+  "description": "Selector Logger Host",
+  "path": "../selector_logger.py",
+  "type": "stdio"
+}

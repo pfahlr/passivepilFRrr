@@ -28,11 +28,9 @@ def main():
             path = msg.get('path')
             lines = msg.get('lines', [])
             try:
-                # Ensure directory exists
                 os.makedirs(os.path.dirname(path), exist_ok=True)
                 with open(path, 'a', encoding='utf-8') as f:
                     for line in lines:
-                        # Each entry on its own line
                         f.write((line or '') + '\n')
                     f.flush()
                 send_message({"ok": True})
