@@ -9,4 +9,6 @@ test('popup displays configuration form', () => {
   assert.match(file, /<h1>Selector Logger<\/h1>/)
   assert.match(file, />Run<\/button>/)
   assert.match(file, /Auto-run on page load/)
+  assert.match(file, /<label[^>]*for="log"[^>]*>Log<\/label>/)
+  assert.match(file, /<textarea[^>]*id="log"/)
 })
