@@ -14,8 +14,6 @@
     },
     "types": ["chrome", "node"]
   },
-
-  "include": ["**/*.ts", "**/*.svelte" , "svelte.d.ts", "wxt-env.d.ts"],
-
+  "include": ["**/*.ts", "**/*.svelte", "svelte.d.ts", "wxt-env.d.ts"],
   "exclude": ["node_modules"]
 }

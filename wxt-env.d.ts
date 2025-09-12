@@ -1,7 +1,7 @@
 /// <reference types="wxt/client" />
 /// <reference types="svelte" />
 
-import './.wxt/types/imports';
-import './.wxt/types/globals';
+import './.wxt/imports';
+import './globals';
 
 export {};
