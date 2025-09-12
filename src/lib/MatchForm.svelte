@@ -16,7 +16,14 @@
   let nativeStatus = '';
 
   onMount(async () => {
-    /* placeholder for future state loading - disabled in tests */
+    const state = await stateItem.getValue();
+    rows = state.rows.length ? state.rows.map(r => ({ ...r })) : [{ enabled: true, value: '' }];
+    enableNative = state.enableNative;
+    filePath = state.filePath;
+    skipVisited = state.skipVisited;
+    autoRun = state.autoRun;
+    const { lines } = await logItem.getValue();
+    log = lines.join('\n');
   });
 
   function persist() {
