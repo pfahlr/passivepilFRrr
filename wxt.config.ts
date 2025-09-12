@@ -1,6 +1,8 @@
 import { defineConfig } from 'wxt';
 
 export default defineConfig({
+  srcDir: 'src',
+  modules: ['@wxt-dev/module-svelte'],
   alias: {
     '~': 'src',
     '#imports': '.wxt/imports',
@@ -14,12 +16,5 @@ export default defineConfig({
     permissions: ['storage', 'scripting', 'activeTab', 'nativeMessaging'],
     optional_permissions: ['downloads'],
     host_permissions: ['<all_urls>'],
-    content_scripts: [
-      {
-        matches: ['<all_urls>'],
-        js: ['content.js'],
-        run_at: 'document_idle',
-      },
-    ],
   },
 });
