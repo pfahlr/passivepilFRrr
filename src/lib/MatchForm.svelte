@@ -17,14 +17,13 @@
 
   onMount(async () => {
     const state = await stateItem.getValue();
-    rows = state.rows?.length ? state.rows : [{ enabled: true, value: '' }];
+    rows = state.rows.length ? state.rows.map(r => ({ ...r })) : [{ enabled: true, value: '' }];
     enableNative = state.enableNative;
     filePath = state.filePath;
     skipVisited = state.skipVisited;
     autoRun = state.autoRun;
-
-    const logData = await logItem.getValue();
-    log = logData.lines.join('\n');
+    const { lines } = await logItem.getValue();
+    log = lines.join('\n');
   });
 
   function persist() {
@@ -33,14 +32,18 @@
 
   function addRow(i?: number) {
     const row: Row = { enabled: true, value: '' };
-    if (i == null) rows.push(row);
-    else rows.splice(i + 1, 0, row);
+    if (i == null) rows = [...rows, row];
+    else {
+      rows.splice(i + 1, 0, row);
+      rows = [...rows];
+    }
     persist();
   }
 
   function removeRow(i: number) {
     rows.splice(i, 1);
     if (!rows.length) rows.push({ enabled: true, value: '' });
+    rows = [...rows];
     persist();
   }
 
@@ -160,7 +163,7 @@
     <div class="status">{nativeStatus}</div>
   </details>
 
-  <label class="loglabel">Log</label>
-  <textarea rows="10" spellcheck="false" bind:value={log} readonly></textarea>
+  <label class="loglabel" for="log">Log</label>
+  <textarea id="log" rows="10" spellcheck="false" bind:value={log} readonly></textarea>
 </div>
 
