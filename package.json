@@ -2,6 +2,9 @@
   "name": "passivepilfrrr",
   "version": "0.1.0",
   "type": "module",
+  "imports": {
+    "#imports": "./test/stubs/imports.ts"
+  },
   "scripts": {
     "dev": "wxt",
     "build": "wxt build",
