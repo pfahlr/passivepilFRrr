@@ -6,12 +6,13 @@
     "lib": ["ES2020", "DOM"],
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "allowImportingTsExtensions": true,
     "baseUrl": ".",
     "paths": {
       "~/*": ["src/*"],
       "#imports": [".wxt/imports"]
     },
-    "types": ["chrome"]
+    "types": ["chrome", "node"]
   },
 
   "include": ["**/*.ts", "**/*.svelte" , "svelte.d.ts", "wxt-env.d.ts"],
