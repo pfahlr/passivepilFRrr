@@ -1,0 +1,8 @@
+{
+  "name": "com.pfahlr.selectorlogger",
+  "description": "Native host for Selector Logger",
+  "path": "selector_logger.py",
+  "type": "stdio",
+  "allowed_origins": ["chrome-extension://jppakgbidmimbpnhpmgaakglhddchgmk/"],
+  "allowed_extensions":  ["selectorlogger@pfahlr"]
+}

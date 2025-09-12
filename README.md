@@ -17,5 +17,5 @@ This project communicates with a Python native messaging host. To install it:
 2. Copy `native_host/com.pfahlr.selectorlogger.json` to your browser's native-messaging hosts directory and update the `path` if needed.
 
 The manifest references `../selector_logger.py` so the host can be installed alongside this repository in any location.
+The manifest now references `selector_logger.py` by relative path so the host can be installed in any location.
 
-# passivepilFRrr

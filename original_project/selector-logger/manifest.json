@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Selector Logger",
+  "version": "0.1.0",
+  "description": "Collect HTML/inner/attrs from CSS selectors with optional domain/path scoping.",
+  "action": {
+    "default_title": "Selector Logger",
+    "default_popup": "popup.html"
+  },
+  "permissions": ["storage", "scripting", "activeTab", "nativeMessaging"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.ts"
+  },
+  "optional_permissions": ["downloads"],
+  "browser_specific_settings": {
+  "gecko": { "id": "selectorlogger@pfahlr" }
+   }
+}
