@@ -1,4 +1,4 @@
-import { runCollectors } from '~/utils/collectors';
+import { runCollectors } from '~/lib/utils/collectors';
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (message?.type === 'runCollectors') {
