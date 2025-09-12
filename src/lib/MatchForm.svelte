@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { stateItem, logItem, visitedItem } from '~/utils/storage';
-  import { normalizeUrl } from '~/utils/normalizeUrl';
-  import { messaging } from '~/messaging';
+  import { stateItem, logItem, visitedItem } from '~/lib/utils/storage';
+  import { normalizeUrl } from '~/lib/utils/normalizeUrl';
+  import { messaging } from '~/lib/messaging';
 
   interface Row { enabled: boolean; value: string }
   const MAX_LOG_LINES = 5000;

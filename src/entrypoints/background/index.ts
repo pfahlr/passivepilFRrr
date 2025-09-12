@@ -1,6 +1,6 @@
-import { messaging } from '~/messaging';
-import { stateItem, visitedItem, VISITED_KEY } from '~/utils/storage';
-import { normalizeUrl } from '~/utils/normalizeUrl';
+import { messaging } from '~/lib/messaging';
+import { stateItem, visitedItem, VISITED_KEY } from '~/lib/utils/storage';
+import { normalizeUrl } from '~/lib/utils/normalizeUrl';
 
 const HOST_NAME = 'com.pfahlr.selectorlogger';
 let nativePort: chrome.runtime.Port | null = null;
