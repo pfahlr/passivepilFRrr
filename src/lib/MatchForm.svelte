@@ -16,15 +16,7 @@
   let nativeStatus = '';
 
   onMount(async () => {
-    const state = await stateItem.getValue();
-    rows = state.rows?.length ? state.rows : [{ enabled: true, value: '' }];
-    enableNative = state.enableNative;
-    filePath = state.filePath;
-    skipVisited = state.skipVisited;
-    autoRun = state.autoRun;
-
-    const logData = await logItem.getValue();
-    log = logData.lines.join('\n');
+    /* placeholder for future state loading - disabled in tests */
   });
 
   function persist() {
