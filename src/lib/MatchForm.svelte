@@ -1,11 +1,10 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { stateItem, logItem, visitedItem } from '~/lib/utils/storage';
+  import { stateItem, logItem, visitedItem, MAX_LOG_LINES } from '~/lib/utils/storage';
   import { normalizeUrl } from '~/lib/utils/normalizeUrl';
   import { messaging } from '~/lib/messaging';
 
   interface Row { enabled: boolean; value: string }
-  const MAX_LOG_LINES = 5000;
 
   let rows: Row[] = [];
   let enableNative = false;
