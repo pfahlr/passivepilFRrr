@@ -12,3 +12,8 @@ test('popup displays configuration form', () => {
   assert.match(file, /<label[^>]*for="log"[^>]*>Log<\/label>/)
   assert.match(file, /<textarea[^>]*id="log"/)
 })
+
+test('rows are reassigned on add/remove', () => {
+  assert.match(file, /function addRow[\s\S]*rows\s*=\s*\[/)
+  assert.match(file, /function removeRow[\s\S]*rows\s*=\s*\[/)
+})
