@@ -7,13 +7,6 @@ import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 
-declare global {
-  // wxt injects these globals in the real extension environment
-  // declare here for tests and type checking
-  // eslint-disable-next-line no-var
-  var browser: any
-}
-
 let onUpdated: any
 let sendCount: number
 
@@ -41,8 +34,8 @@ function setupChrome() {
     },
     storage: { onChanged: { addListener: () => {} } },
   } as any
-  globalThis.browser = { runtime: { id: 'x' } } as any
-  globalThis.defineBackground = (fn: any) => fn()
+  ;(globalThis as any).browser = { runtime: { id: 'x' } }
+  ;(globalThis as any).defineBackground = (fn: any) => fn()
 }
 
 beforeEach(() => {
