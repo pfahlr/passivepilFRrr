@@ -1,10 +1,9 @@
-import type { Runtime } from 'webextension-polyfill';
 import { messaging } from '~/messaging';
 import { stateItem, visitedItem, VISITED_KEY } from '~/utils/storage';
 import { normalizeUrl } from '~/utils/normalizeUrl';
 
 const HOST_NAME = 'com.pfahlr.selectorlogger';
-let nativePort: Runtime.Port | null = null;
+let nativePort: chrome.runtime.Port | null = null;
 
 async function updateBadge() {
   const { urls } = await visitedItem.getValue();
