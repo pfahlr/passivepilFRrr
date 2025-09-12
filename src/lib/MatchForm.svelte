@@ -160,7 +160,7 @@
     <div class="status">{nativeStatus}</div>
   </details>
 
-  <label class="loglabel">Log</label>
-  <textarea rows="10" spellcheck="false" bind:value={log} readonly></textarea>
+  <label class="loglabel" for="log">Log</label>
+  <textarea id="log" rows="10" spellcheck="false" bind:value={log} readonly></textarea>
 </div>
 
