@@ -101,7 +101,7 @@ Here’s the up-to-date spec for your extension as it stands after the simplific
 * **Optional permissions:** `"nativeMessaging"` (only needed if file output used)
 
 
-Tech & Targets
+## Tech & Targets
 
 * **Runtime:** Chrome (MV3) via **WXT**
 * **Lang:** TypeScript (strict)
@@ -109,6 +109,16 @@ Tech & Targets
 * **E2E Tests:** **Puppeteer** (launches Chrome with the built extension)
 * **Lint/Format:** ESLint + Prettier
 * **Storage/API:** `chrome.*` APIs (mocked in unit tests)
+
+## Setup Commands
+
+- Install deps: `pnpm install`
+- Install Puppeteer browsers (Chromium): `pnpm exec puppeteer browsers install`
+- Start dev server: `pnpm dev`
+- Run tests: `pnpm run test`
+
+
+
 
 ## Project Commands
 
@@ -159,6 +169,33 @@ Tech & Targets
 * Exercise critical user journeys (popup open, content script behavior, background message round-trips, storage updates)
 
 > Keep E2E focused on acceptance criteria. Push logic into unit-tested modules.
+
+## Testing Instructions
+- Install Puppeteer browsers (Chromium): `pnpm exec puppeteer browsers install`
+- Start dev server: `pnpm dev`
+- Run tests: `pnpm run test`
+
+## Dependencies
+This project uses **Puppeteer** for browser automation.
+
+### Local Install
+- `pnpm add -D puppeteer`
+- Run once after install: `pnpm exec puppeteer browsers install`
+
+### System Libraries (Linux / CI)
+Puppeteer requires extra system packages:
+- `libnss3`
+- `libatk1.0-0`
+- `libatk-bridge2.0-0`
+- `libcups2`
+- `libdrm2`
+- `libxkbcommon0`
+- `libxcomposite1`
+- `libxdamage1`
+- `libxfixes3`
+- `libxrandr2`
+- `libgbm1`
+- `libasound2`
 
 ---
 
