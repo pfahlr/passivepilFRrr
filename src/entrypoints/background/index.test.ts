@@ -7,6 +7,13 @@ import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 
+declare global {
+  // wxt injects these globals in the real extension environment
+  // declare here for tests and type checking
+  // eslint-disable-next-line no-var
+  var browser: any
+}
+
 let onUpdated: any
 let sendCount: number
 
