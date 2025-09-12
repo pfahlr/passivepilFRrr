@@ -25,14 +25,18 @@
 
   function addRow(i?: number) {
     const row: Row = { enabled: true, value: '' };
-    if (i == null) rows.push(row);
-    else rows.splice(i + 1, 0, row);
+    if (i == null) rows = [...rows, row];
+    else {
+      rows.splice(i + 1, 0, row);
+      rows = [...rows];
+    }
     persist();
   }
 
   function removeRow(i: number) {
     rows.splice(i, 1);
     if (!rows.length) rows.push({ enabled: true, value: '' });
+    rows = [...rows];
     persist();
   }
 
